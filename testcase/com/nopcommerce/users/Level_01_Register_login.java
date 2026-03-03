@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class User_01_Register_login {
+public class Level_01_Register_login {
     WebDriver  driver;
     @BeforeClass
     public void beforeClass(){
@@ -24,6 +24,10 @@ public class User_01_Register_login {
     }
     @Test
     public void TC_02_Login(){
+
+    }
+    @Test
+    public void TC_03_MyAccount(){
 
     }
     @AfterClass
