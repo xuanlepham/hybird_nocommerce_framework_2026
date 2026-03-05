@@ -1,6 +1,6 @@
 package commons;
 
-public class basePage {
+public class BasePage {
     public void clickToElement(){
 
     }
