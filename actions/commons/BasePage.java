@@ -99,12 +99,19 @@ public class BasePage {
     public void sendkeyAlert(WebDriver driver, String valueAlert){
         waitAlertPresences(driver).sendKeys(valueAlert);
     }
+    public Set<String> getWindowHandles(WebDriver driver){
+        return driver.getWindowHandles();
+    }
+    public String getWindowHandle(WebDriver driver) {
+        return driver.getWindowHandle();
+    }
+
     //switchToWindowByID dùng cho trường hợp mở 2 tab
     public void switchToWindowByID(WebDriver driver, String parentID) { // tham số truyền vào driver là driver của trình duyệt,parentID của tab hiện tại
         Set<String> allWindows = driver.getWindowHandles(); // Lấy tất cả các tab windows hiện có
-        for (String runWindow : allWindows) { // duyệt qua từng tab window
-            if (!runWindow.equals(parentID)) { // Nếu tab window nào không trùng với id của tab hiện tại ( tab gốc) -> tab window mới vừa mở
-                driver.switchTo().window(runWindow);// chuyển thao tác element qua tab mới
+        for (String runWindows : allWindows) { // duyệt qua từng tab window
+            if (!runWindows.equals(parentID)) { // Nếu tab window hiện tại không trùng với id của tab tab gốc
+                driver.switchTo().window(runWindows);// chuyển thao tác element qua tab mới
                 break;
             }
         }
