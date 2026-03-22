@@ -1,12 +1,14 @@
 package commons;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class BasePage {
@@ -138,5 +140,164 @@ public class BasePage {
         }
         driver.switchTo().window(parentID);
     }
+    public WebElement getElement(WebDriver driver , String locator){
+        return driver.findElement(By.xpath(locator));
+    }
 
+
+    public void clickToElemetn(WebDriver driver , String locator){
+        getElement(driver, locator).click();
+    }
+
+    public void sendkeyToElemetn (WebDriver driver , String locator,String valueKeysToSend){
+        getElement(driver, locator).sendKeys(valueKeysToSend);
+    }
+
+    public void selectItemInDropdown(WebDriver driver , String locator, String textItem){
+        new Select(getElement(driver, locator)).selectByVisibleText(textItem);
+    }
+
+    public String getSelectedItemInDropdown(WebDriver driver , String locator){
+        return new Select( getElement(driver, locator)).getFirstSelectedOption().getText();
+    }
+
+    public boolean isDropdownMutiple (WebDriver driver , String locator){
+        return new Select(getElement(driver, locator)).isMultiple();
+    }
+    // Dùng cho dropdown thường. item luôn visible ( hiển thị )
+    public void selectItemInCustomDropdown(WebDriver driver, String parentLocator, String childItemLocator, String expectedItem) {
+        getElement(driver, parentLocator).click();
+        sleepInSecond(2);
+        List<WebElement> allItems = new WebDriverWait(driver, Duration.ofSeconds(15))
+                .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(childItemLocator)));
+        sleepInSecond(2);
+        for (WebElement item : allItems) {
+            if (item.getText().trim().equals(expectedItem)) {
+                item.click();
+                break;
+            }
+        }
+    }
+    // Dùng java script để scroll đến item
+
+    public void selectItemInCustomDropdowns(WebDriver driver, String parentLocator, String childItemLocator, String expectedItem){
+        driver.findElement(By.xpath(parentLocator)).click();
+        sleepInSecond(2);
+        List<WebElement> allItems = new WebDriverWait(driver, Duration.ofSeconds(15))
+                .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(childItemLocator)));
+        sleepInSecond(2);
+        for (WebElement item : allItems) {
+            if(item.getText().trim().equals(expectedItem)){
+                JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+                jsExecutor.executeScript("arguments[0].scrollIntoView(true);", item);
+                item.click();
+                break;
+            }
+        }
+    }
+    public void selectItemInCustomDropdownTextInvisibel(WebDriver driver, String parentLocator, String childItemLocator, String expectedItem) {
+        driver.findElement(By.xpath(parentLocator)).click(); // Click vào locator cha chứa dropdown
+        sleepInSecond(2);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        List<WebElement> allItems = wait.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(childItemLocator))
+        ); // lấy tất cả các element con trong list element con
+        sleepInSecond(2);
+        boolean isFound = false;
+        for (WebElement item : allItems) { // duyệt qua tất cả các item trong list
+            // Lấy text bằng JS (handle invisible) ***
+            String text = (String) js.executeScript(
+                    "return arguments[0].textContent;", item
+            );
+            // Nếu text(***) khác null và bằng với text của item mong muốn lấy
+            if (text != null && text.trim().equalsIgnoreCase(expectedItem)) {
+                // scroll tới item
+                js.executeScript("arguments[0].scrollIntoView(true);", item);
+                // click bằng JS (tránh lỗi click thường)
+                js.executeScript("arguments[0].click();", item);
+                isFound = true;
+                break;
+            }
+        }
+        if (!isFound) {
+            throw new RuntimeException("Không tìm thấy item: " + expectedItem);
+        }
+    }
+    public void sleepInSecond(long timeInsecond){
+        try {
+            Thread.sleep(timeInsecond * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getAttributeValue(WebDriver driver, String locator, String textValue){
+        return getElement(driver, locator).getAttribute(textValue);
+    }
+
+    public String getCSSVlaue(WebDriver driver, String locator, String textValue){
+        return getElement(driver,locator).getCssValue(textValue);
+    }
+
+    public String getHexaColorByRgbaColor(String rgbaValue){
+        return Color.fromString(rgbaValue).asHex().toUpperCase();
+    }
+    public List<WebElement> getElements(WebDriver driver, String locator) {
+        return driver.findElements(By.xpath(locator));
+    }
+
+    public boolean isControlDisplayed (WebDriver driver, String locator){
+        return getElement(driver,locator ).isDisplayed();
+    }
+
+    public boolean isControlSelected (WebDriver driver, String locator){
+        return getElement(driver,locator ).isSelected();
+    }
+
+    public boolean isControlEnable (WebDriver driver, String locator){
+        return getElement(driver,locator ).isEnabled();
+    }
+    // hàm check vào checkbox hoặc radio nếu chưa được chọn
+    public void checkTheCheckboxOrRadio(WebDriver driver, String locator) {
+        WebElement element = getElement(driver,locator);
+        if (!element.isSelected()) {
+            element.click();
+        }
+    }
+
+
+    public void uncheckTheCheckbox(WebDriver driver, String locator) {
+        WebElement element = getElement(driver,locator);
+        if (!element.isSelected()) {
+            element.click();
+        }
+    }
+
+    public void switchToIframeIndex (WebDriver driver, int index){
+         driver.switchTo().frame(index);
+    }
+
+    public void switchToIframename (WebDriver driver, String iframeVlaue){
+        driver.switchTo().frame(iframeVlaue);
+    }
+
+    public void switchToIframElement (WebDriver driver, String locator){
+            driver.switchTo().frame(getElement(driver,locator));
+    }
+    public void switchToIframeElement(WebDriver driver, String locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement iframe = wait.until(
+                ExpectedConditions.presenceOfElementLocated(By.xpath(locator))
+        );
+        driver.switchTo().frame(iframe);
+    }
+    // điều hướng về frame gốc
+    public void switchToDefaultContent(WebDriver driver) {
+        driver.switchTo().defaultContent();
+    }
+    // Switch về frame cha
+    public void switchToParentFrame(WebDriver driver) {
+        driver.switchTo().parentFrame();
+    }
 }
