@@ -336,12 +336,21 @@ public class BasePage {
         WebElement element = getElement(driver, locator);
       new Actions(driver).click(element).perform();
     }
+    public void leftClickToElement2(WebDriver driver, String locator) {
+        new Actions(driver).click(getElement(driver, locator)).perform();
+    }
+    public void leftClickToElement3(WebDriver driver, String locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locator)));
+        new Actions(driver).click(element).perform();
+    }
 
     public void rightClickToElement(WebDriver driver, String locator) {
         WebElement element = driver.findElement(By.xpath(locator));
         Actions actions = new Actions(driver);
         actions.contextClick(element).perform();
     }
+
 
     public void doubleClickToElement(WebDriver driver, String locator) {
         WebElement element = driver.findElement(By.xpath(locator));
