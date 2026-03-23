@@ -163,8 +163,7 @@ public class BasePage {
     }
 
     public WebElement getElement(WebDriver driver, String locator) {
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(15));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
+        return driver.findElement(By.xpath(locator));
     }
 
 
@@ -307,7 +306,7 @@ public class BasePage {
         driver.switchTo().frame(index);
     }
 
-    public void switchToIframename(WebDriver driver, String iframeVlaue) {
+    public void switchToIframeName(WebDriver driver, String iframeVlaue) {
         driver.switchTo().frame(iframeVlaue);
     }
 
@@ -334,9 +333,8 @@ public class BasePage {
     }
 
     public void leftClickToElement(WebDriver driver, String locator) {
-        WebElement element = driver.findElement(By.xpath(locator));
-        Actions actions = new Actions(driver);
-        actions.click(element).perform();
+        WebElement element = getElement(driver, locator);
+      new Actions(driver).click(element).perform();
     }
 
     public void rightClickToElement(WebDriver driver, String locator) {
