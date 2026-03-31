@@ -4,7 +4,7 @@
 
     <test name="Run on Chrome browser">
         <classes>
-            <class name="com.nopcommerce.users.Level_03_Page_Object_Parttern" />
+            <class name="com.nopcommerce.users.Level_03_PageObject_Parttern" />
         </classes>
     </test>
 

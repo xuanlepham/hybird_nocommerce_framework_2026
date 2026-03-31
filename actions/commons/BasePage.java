@@ -544,5 +544,8 @@ import java.util.Set;
          new WebDriverWait(driver, Duration.ofSeconds(times)).until(ExpectedConditions.presenceOfElementLocated(getByXpath(locator)));
     }
 
+    public void onlyWaitForElementSelected(WebDriver driver, String locator, int times){
+            new WebDriverWait(driver, Duration.ofSeconds(times)).until(ExpectedConditions.elementToBeSelected(getByXpath(locator)));
+        }
 
 }

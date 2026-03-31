@@ -1,109 +1,42 @@
 package pageObjects;
 
+import com.beust.jcommander.IStringConverter;
+import commons.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import pageUis.CustomerInforPageUi;
 
 import java.time.Duration;
 
-public class CustomerInforPageObject {
-    //Declare Variable
+public class CustomerInforPageObject extends BasePage {
+
     private WebDriver driver;
-
-    private HomePageObject homePage;
-    private RegisterPageObject registerPage;
-    private LoginPageObject loginPage;
-    private CustomerInforPageObject customerInforPage;
-
-
-
-    //Pre-Conditon
-    @BeforeClass
-    public void beforeClass(){
-        driver = new ChromeDriver();
-        driver.get("");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
-
-        // Nó được sinh ra và bắt đầu làm những action của page đó
-        homePage = new HomePageObject();
-
+    public CustomerInforPageObject(WebDriver driver){
+        this.driver = driver;
+    }
+    public boolean isSelectedMalRadioButton() {
+        onlyWaitForElementSelected(driver, CustomerInforPageUi.GENDER_MALE_RADIO_BUTTON,15);
+        return isControlSelected(driver, CustomerInforPageUi.GENDER_MALE_RADIO_BUTTON);
     }
 
-    //Testcase
-    @Test
-    public void Register(){
-        // Action 1
-        homePage.clickToRegisterLink();
-
-        // Từ homePage qua register page
-        // Page đó được sinh ra và bắt đầu làm những action của page đó
-
-        registerPage = new RegisterPageObject();
-
-        registerPage.clickToMaleRadio();
-
-        registerPage.enterToFirstNameTextBox("");
-
-        registerPage.enterToLastNameTextBox("");
-
-        registerPage.selectDayDropdown("");
-
-        registerPage.selectMonthDropdown("");
-
-        registerPage.selectYearDropdown("");
-
-        registerPage.enterToEmailTextbox("");
-
-        registerPage.enterToCompanyTextbox("");
-
-        registerPage.enterToPasswordTextbox("");
-
-        registerPage.enterToConfrimPasswordTextbox("");
-
-        registerPage.clickToRegisterButton();
-
-        Assert.assertEquals(registerPage.getRegisterSuccessMessage(),"");
-
-
+    public String getValueFirstNameTextbox() {
+        onlyWaitForElementVisible(driver, CustomerInforPageUi.FRISTNAME_TEXTBOX,15);
+        return getAttributeValue(driver,CustomerInforPageUi.FRISTNAME_TEXTBOX,"value") ;
     }
-    @Test
-    public void Login(){
-        registerPage.clickToLoginButton();
-        // Từ register qua login page
-        // Page đó được sinh ra và bắt đầu làm những action của page đó
-        loginPage = new LoginPageObject();
 
-        loginPage.enterToEmailTexbox("");
-        loginPage.enterToPasswordTexbox("");
-        loginPage.clickToLoginButton("");
-
-        // Từ login qua home page
-        // Page đó được sinh ra và bắt đầu làm những action của page đó
-        homePage = new HomePageObject();
-
-        Assert.assertTrue(homePage.isMyAccountLinkDisplayed());
-
+    public String getValueLastNameTextbox() {
+        onlyWaitForElementVisible(driver, CustomerInforPageUi.LASTNAME_TEXTBOX,15);
+        return getAttributeValue(driver,CustomerInforPageUi.LASTNAME_TEXTBOX,"value") ;
     }
-    @Test
-    public void MyAccount(){
-        // Từ homepage qua Customer infor
-        // Page đó được sinh ra và bắt đầu làm những action của page đó
-        homePage.clickToMyAccountLink():
 
-        customerInforPage = new CustomerInforPageObject();
-        Assert.assertTrue(customerInforPage.isSelectedMalRadioButton());
-        Assert.assertEquals(customerInforPage.getValueFirstNameTextbox(),"");
-        Assert.assertEquals(customerInforPage.getValueLastNameTextbox(),"");
-        Assert.assertEquals(customerInforPage.getValueEmailTextbox(),"");
-
-
+    public String getValueEmailTextbox() {
+        onlyWaitForElementVisible(driver, CustomerInforPageUi.EMAIL_TEXTBOX,15);
+        return getAttributeValue(driver,CustomerInforPageUi.EMAIL_TEXTBOX,"value") ;
     }
-    //Post-Condition
-    @AfterClass
-    public void afterClass(){
-        driver.quit();
-    }
+    //Declare Variable
+
 }
